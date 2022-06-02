@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  flarum:
+    image: kubile/flarum:1.3.0
+    container_name: flarum-sample
+    restart: always
+    env_file:
+      - ./flarum.env
+    volumes:
+      - ${FLARUM_HOME}/volumes/assets:/flarum/app/public/assets
+      - ${FLARUM_HOME}/volumes/extensions:/flarum/app/extensions
+      - ${FLARUM_HOME}/volumes/storage/logs:/flarum/app/storage/logs
+      - ${FLARUM_HOME}/volumes/nginx:/etc/nginx/flarum
+    ports:
+      - 80:8888
+    depends_on:
+      - mariadb
+  mariadb:
+    image: mariadb:10.5
+    container_name: flarum-mariadb-sample
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=flarum
+      - MYSQL_DATABASE=flarum
+      - MYSQL_USER=flarum
+      - MYSQL_PASSWORD=flarum
+    volumes:
+      - ${FLARUM_HOME}/mysql/db:/var/lib/mysql
